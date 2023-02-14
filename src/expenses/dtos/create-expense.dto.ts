@@ -1,5 +1,4 @@
-import { IsEmail, IsString, IsDate, IsNumber, IsPositive, IsDefined} from 'class-validator';
-import { IsNotEmpty } from 'class-validator/types/decorator/decorators';
+import { IsEmail, IsString, IsDate, IsNumber, IsPositive, IsDefined, IsNotEmpty} from 'class-validator';
 
 export class CreateExpenseDto {
 
@@ -8,8 +7,8 @@ export class CreateExpenseDto {
   description: string;
 
   @IsNotEmpty()
-  @IsDate()
-  date: Date;
+  @IsString()
+  date: string;
 
   @IsNumber()
   @IsDefined()

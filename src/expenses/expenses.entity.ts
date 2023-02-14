@@ -1,4 +1,4 @@
-import { Entity , PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity , PrimaryGeneratedColumn, Column, AfterInsert, AfterUpdate, AfterRemove } from 'typeorm';
 
 @Entity()
 export class Expense {
@@ -16,5 +16,20 @@ export class Expense {
 
   @Column()
   userId: number;
+
+  @AfterInsert()
+  logInsert() {
+    console.log('Inserted Expense with id', this.id);
+  }
+
+  @AfterUpdate()
+  logUpdate() {
+    console.log('Updated Expense with id', this.id);
+  }
+
+  @AfterRemove()
+  logRemove() {
+    console.log('Removed Expense with id', this.id);
+  }
 
 }

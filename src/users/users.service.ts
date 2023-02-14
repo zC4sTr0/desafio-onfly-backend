@@ -7,21 +7,23 @@ import { User } from './users.entity';
 export class UsersService {
   constructor(@InjectRepository(User) private repository: Repository<User>) {
   }
-  create(email: string, password: string) {
-    const user = this.repository.create({ email, password });
-    return await this.repository.save(user);
+  create(name: string, email: string, password: string) {
+    const user = this.repository.create({name, email, password });
+    return  this.repository.save(user);
   }
 
-  async findOne(id: number): Promise<User> {
-    return await this.repository.findOne({ id });
+  async findOne(userId: number): Promise<User> {
+    const user = await this.repository.findOne({ where: { id: userId } });
+    return user;
   }  
 
-  async find(email: string){
-    return await this.repository.find({ email });
+  async find(userEmail: string){
+    const user = await this.repository.find({where: {email: userEmail}});
+    return user;
   }
 
-  async update(id: number, attrs: Partial<User>) {
-    const user = await this.findOne(id);
+  async update(userId: number, attrs: Partial<User>) {
+    const user = await this.findOne(userId);
     if (!user) {
       throw new NotFoundException('user not found');
     }

@@ -13,7 +13,9 @@ import { ExpensesModule } from './expenses/expenses.module';
     database: 'db.sqlite',
     entities: [User, Expense],
     synchronize: true,
-  })],
+  }),
+  UsersModule, 
+  ExpensesModule],
   controllers: [AppController],
   providers: [AppService]
 })
