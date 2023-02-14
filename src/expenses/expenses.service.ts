@@ -2,10 +2,23 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Expense } from './expenses.entity';
+import { MailerService } from '@nestjs-modules/mailer';
+
+
 
 @Injectable()
 export class ExpensesService {
-  constructor( @InjectRepository(Expense) private readonly expenseRepository: Repository<Expense>) {}
+  constructor( @InjectRepository(Expense) private readonly expenseRepository: Repository<Expense>,
+                private mailerService: MailerService) {}
+
+  async sendEmail(email: string, mensagem: string) {
+    await this.mailerService.sendMail({
+      to: email,
+      from: 'onfly_challenge@challenge.com',
+      subject: 'despesa cadastrada',
+      html: `<h3 style="color: red">${mensagem}</h3>`,
+    });
+  }
 
   async create(amount: number, description: string, date: Date, userId: number): Promise<Expense> {
     const expense = this.expenseRepository.create({ amount, description, date, userId });
@@ -21,7 +34,7 @@ export class ExpensesService {
     if (expenseAmount) {
       return this.expenseRepository.find({ where: { amount: expenseAmount, userId: userId } });
     }
-    return this.expenseRepository.find();
+    return this.expenseRepository.find({ where: { userId: userId }});
   }
 
   async update(id: number, userId: number, updates: Partial<Expense>): Promise<Expense> {

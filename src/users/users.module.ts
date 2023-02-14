@@ -13,7 +13,7 @@ import { CurrentUserInterceptor } from 'src/interceptors/current-user.intercepto
     {
       provide: APP_INTERCEPTOR,
       useClass: CurrentUserInterceptor,
-    },],
+    }],
   controllers: [UsersController]
 })
 export class UsersModule {}

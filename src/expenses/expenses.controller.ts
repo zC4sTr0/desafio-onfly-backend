@@ -1,9 +1,10 @@
-import { Controller, Post, Body, Delete, Get, Patch, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Delete, Get, Patch, Param, Query, UseGuards, BadRequestException } from '@nestjs/common';
 import { CreateExpenseDto } from './dtos/create-expense.dto';
 import { ExpensesService } from './expenses.service';
 import { UpdateExpenseDto } from './dtos/update-expense.dto';
 import { CurrentUser } from '../decorators/current-user.decorator';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { User } from 'src/users/users.entity';
 
 @Controller('expenses')
 export class ExpensesController {
@@ -15,46 +16,61 @@ export class ExpensesController {
   createExpense(@Body() body: CreateExpenseDto) {
     const date = new Date(body.date);
     if (isNaN(date.getTime())) {
-      throw new Error('Invalid date');
+      throw new BadRequestException('Invalid date');
     }
+
+    if (date.getTime() > Date.now()) {
+      throw new BadRequestException('Invalid date');
+    }
+
+    if (body.description.length > 191) {
+      throw new BadRequestException('Description is too long');
+    }
+      
     this.expensesService.create(body.amount, body.description, date, body.userId);
   }
 
   @Get('/:id')
   @UseGuards(AuthGuard)
-  findExpense(@Param('id') id: number, @CurrentUser() userId: number) {
-    const expense = this.expensesService.findOne(id, userId);
+  findExpense(@Param('id') id: number, @CurrentUser() user: User) {
+    const expense = this.expensesService.findOne(id, user.id);
     if (!expense) {
-      throw new Error('Expense not found');
+      throw new BadRequestException('Expense not found');
     }
     return expense;
   }
 
   @Get()
   @UseGuards(AuthGuard)
-  async findAllExpenses(@CurrentUser() userId: number, @Query('amount') amount: number) {
-    const expenses = await this.expensesService.find(userId, amount);
+  async findAllExpenses(@CurrentUser() user: User, @Query('amount') amount: number) {
+    const expenses = await this.expensesService.find(user.id, amount);
     if (!expenses) {
-      throw new Error('Expenses not found');
+      throw new BadRequestException('Expenses not found');
     }
     return expenses;
   }
 
   @Patch('/:id')
   @UseGuards(AuthGuard)
-  updateExpense(@Param('id') id: number, @CurrentUser() userId: number, @Body() body: UpdateExpenseDto) {
+  updateExpense(@Param('id') id: number, @CurrentUser() user: User, @Body() body: UpdateExpenseDto) {
     const date = new Date(body.date);
+
     if (isNaN(date.getTime())) {
-      throw new Error('Invalid date');
+      throw new BadRequestException('Invalid date');
     }
+
+    if (date.getTime() > Date.now()) {
+      throw new BadRequestException('Invalid date');
+    }
+
     body.date = date;
-    return this.expensesService.update(id, userId, body);
+    return this.expensesService.update(id, user.id, body);
   }
 
   @Delete('/:id')
   @UseGuards(AuthGuard)
-  removeExpense(@Param('id') id: number, @CurrentUser() userId: number,) {
-    return this.expensesService.remove(id, userId);
+  removeExpense(@Param('id') id: number, @CurrentUser() user: User) {
+    return this.expensesService.remove(id, user.id);
   }
 
 }
