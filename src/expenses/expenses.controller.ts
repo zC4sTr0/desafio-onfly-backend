@@ -5,15 +5,16 @@ import { UpdateExpenseDto } from './dtos/update-expense.dto';
 import { CurrentUser } from '../decorators/current-user.decorator';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { User } from 'src/users/users.entity';
+import { UsersService } from 'src/users/users.service';
 
 @Controller('expenses')
 export class ExpensesController {
-  constructor(private readonly expensesService: ExpensesService) {
-  }
+  constructor(private readonly expensesService: ExpensesService) {}
+  
   
   @Post('/create')
   @UseGuards(AuthGuard)
-  createExpense(@Body() body: CreateExpenseDto) {
+  async createExpense(@Body() body: CreateExpenseDto) {
     const date = new Date(body.date);
     if (isNaN(date.getTime())) {
       throw new BadRequestException('Invalid date');
@@ -26,8 +27,9 @@ export class ExpensesController {
     if (body.description.length > 191) {
       throw new BadRequestException('Description is too long');
     }
-      
-    this.expensesService.create(body.amount, body.description, date, body.userId);
+    
+    const result = this.expensesService.create(body.amount, body.description, date, body.userId);
+    return result;
   }
 
   @Get('/:id')

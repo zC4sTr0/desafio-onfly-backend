@@ -4,9 +4,13 @@ import { ExpensesController } from './expenses.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Expense } from './expenses.entity';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { UsersModule } from 'src/users/users.module';
+
+
 
 @Module({
   imports: [TypeOrmModule.forFeature([Expense]),
+  UsersModule,
   MailerModule.forRoot({
     transport: {
       host: 'smtp.mailgun.org', 
@@ -18,11 +22,11 @@ import { MailerModule } from '@nestjs-modules/mailer';
       },
       ignoreTLS: true,
     },
-    defaults: { // configurações que podem ser padrões
+    defaults: { 
       from: '"',
     },
   }),],
-  providers: [ExpensesService],
+  providers: [ExpensesService ],
   controllers: [ExpensesController]
 })
 export class ExpensesModule {}

@@ -14,6 +14,7 @@ import { CurrentUserInterceptor } from 'src/interceptors/current-user.intercepto
       provide: APP_INTERCEPTOR,
       useClass: CurrentUserInterceptor,
     }],
-  controllers: [UsersController]
+  controllers: [UsersController],
+  exports: [UsersService], 
 })
 export class UsersModule {}

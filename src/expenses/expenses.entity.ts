@@ -1,4 +1,5 @@
 import { Entity , PrimaryGeneratedColumn, Column, AfterInsert, AfterUpdate, AfterRemove } from 'typeorm';
+import { User } from '../users/users.entity';
 
 @Entity()
 export class Expense {
@@ -13,6 +14,7 @@ export class Expense {
 
   @Column()
   amount: number;
+  
 
   @Column()
   userId: number;

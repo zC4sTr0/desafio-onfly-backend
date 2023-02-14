@@ -1,14 +1,16 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Expense } from './expenses.entity';
 import { MailerService } from '@nestjs-modules/mailer';
+import { UsersService } from 'src/users/users.service';
 
 
 
 @Injectable()
 export class ExpensesService {
   constructor( @InjectRepository(Expense) private readonly expenseRepository: Repository<Expense>,
+                private readonly usersService: UsersService,
                 private mailerService: MailerService) {}
 
   async sendEmail(email: string, mensagem: string) {
@@ -20,7 +22,12 @@ export class ExpensesService {
     });
   }
 
-  async create(amount: number, description: string, date: Date, userId: number): Promise<Expense> {
+  async create(amount: number, description: string, date: Date, userId: number) {
+    const userExists = await this.usersService.findOne(userId); 
+    if (!userExists) {
+      return new BadRequestException(`User #${userId} not found`).getResponse();
+    }
+
     const expense = this.expenseRepository.create({ amount, description, date, userId });
     return this.expenseRepository.save(expense);
   }
@@ -53,6 +60,5 @@ export class ExpensesService {
     }
     await this.expenseRepository.remove(expense);
   }
-
 
 }
