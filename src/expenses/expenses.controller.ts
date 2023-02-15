@@ -3,9 +3,8 @@ import { CreateExpenseDto } from './dtos/create-expense.dto';
 import { ExpensesService } from './expenses.service';
 import { UpdateExpenseDto } from './dtos/update-expense.dto';
 import { CurrentUser } from '../decorators/current-user.decorator';
-import { AuthGuard } from 'src/guards/auth.guard';
-import { User } from 'src/users/users.entity';
-import { UsersService } from 'src/users/users.service';
+import { AuthGuard } from '../guards/auth.guard';
+import { User } from '../users/users.entity';
 
 @Controller('expenses')
 export class ExpensesController {

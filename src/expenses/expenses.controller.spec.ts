@@ -2,8 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ExpensesController } from './expenses.controller';
 import { ExpensesService } from './expenses.service';
 import { CreateExpenseDto } from './dtos/create-expense.dto';
-import { UpdateExpenseDto } from './dtos/update-expense.dto';
-import { User } from '../users/users.entity';
 import { BadRequestException } from '@nestjs/common';
 
 describe('ExpensesController', () => {

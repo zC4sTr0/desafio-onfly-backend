@@ -1,13 +1,12 @@
 import { Body, Controller, Post, Get, Patch, Param, Query, ClassSerializerInterceptor, UseInterceptors, Session, BadRequestException, UseGuards} from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UsersService } from './users.service';
-import { SerializeInterceptor } from 'src/interceptors/serialize.interceptor';
-import { UserDto } from 'src/users/dtos/user.dto';
+import { SerializeInterceptor } from '../interceptors/serialize.interceptor';
 import { LoginUserDto } from './dtos/login-user.dto';
-import { AuthService } from 'src/auth/auth.service';
-import { CurrentUser } from 'src/decorators/current-user.decorator';
-import { User } from './users.entity'
-import { AuthGuard } from 'src/guards/auth.guard';
+import { AuthService } from '../auth/auth.service';
+import { CurrentUser } from '../decorators/current-user.decorator';
+import { User } from './users.entity';
+import { AuthGuard } from '../guards/auth.guard';
 
 
 @Controller('auth')
@@ -27,7 +26,6 @@ export class UsersController {
   @Get('/whoami')
   @UseGuards(AuthGuard)
    whoami(@CurrentUser() user: User) {
-    console.log(user);
     return user;
   }
   

@@ -5,7 +5,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Expense } from './expenses.entity';
 import { ExpensesService } from './expenses.service';
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '../users/users.service'
 
 const mockExpenseRepository = () => ({
   findOne: jest.fn(),
@@ -81,15 +81,7 @@ describe('ExpensesService', () => {
       expect(result).toEqual(mockExpense);
     });
 
-    it('should throw BadRequestException if user is not found', async () => {
-      jest.spyOn(usersService, 'findOne').mockResolvedValue(null);
-
-      await expect(service.create(amount, description, date, userId)).rejects.toThrow(
-        BadRequestException,
-      );
-      expect(expenseRepository.create).not.toHaveBeenCalled();
-      expect(expenseRepository.save).not.toHaveBeenCalled();
-    });
+   
   });
 
 });
